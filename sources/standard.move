@@ -123,8 +123,14 @@ public fun new<T>(cap: TreasuryCap<T>, ctx: &mut TxContext): (IPXTreasuryStandar
 }
 
 public fun set_maximum_supply(witness: &mut Witness, maximum_supply: u64) {
+    // Cannot modify supply policy after any capability is created
+    assert!(witness.mint_cap.is_none(), ECapAlreadyCreated);
+    assert!(witness.burn_cap.is_none(), ECapAlreadyCreated);
+    assert!(witness.metadata_cap.is_none(), ECapAlreadyCreated);
+
     witness.maximum_supply = option::some(maximum_supply);
 }
+
 
 // === Capabilities API ===
 
